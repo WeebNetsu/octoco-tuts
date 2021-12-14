@@ -1,4 +1,3 @@
-// NOTE: Hiding the checked items will not work, this will be fixed in future tutorial
 import React, { useState } from 'react';
 import { useQuery } from "@apollo/react-hooks"; // import use query
 import Task from "./Task";
@@ -68,11 +67,17 @@ export const App = () => {
   });
   
   const tasksData = data?.tasks || [] // get task data
-  const tasks = tasksData.map(({ _id, ...rest }) => ({ // get tasks
-    _id,
-    ...rest,
-    isChecked: (tasksStatus.find(task => task._id === _id) || {}).isChecked
-  }))
+  const tasks = tasksData.map(({ _id, ...rest }) => { // get tasks
+    // this will fix hiding the checkboxes not working
+    const task = tasksStatus.find(task => task?._id === _id );
+    if (!!task) {
+      return {
+        _id,
+        ...rest,
+        isChecked: task.isChecked
+      }
+    }
+  })
 
   const pendingTasksTitle = `${pendingTasksCount > 0 ? `(${pendingTasksCount})` : ""}`;
 
@@ -102,7 +107,8 @@ export const App = () => {
             {isLoading && (<div className="loading">Loading...</div>)}
 
             <ul className="tasks">
-              {tasks.map(task => <Task key={task._id} task={task} onCheckboxClick={toggleChecked} onDeleteClick={deleteTask} />)}
+              {/* make sure to check that task exists in the map */}
+              {tasks.map(task => task && <Task key={task._id} task={task} onCheckboxClick={toggleChecked} onDeleteClick={deleteTask} />)}
             </ul>
           </>
         ) : (<LoginForm />)}
