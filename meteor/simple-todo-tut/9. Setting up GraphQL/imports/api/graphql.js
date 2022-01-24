@@ -1,6 +1,8 @@
 /* 
 meteor update (update to meteor 2.5.1 recommended)
 
+meteor add quave:graphql
+
 meteor npm install graphql@^15.0.0 graphql-tools graphql-load apollo-client apollo-cache-inmemory apollo-link-error apollo-link-ddp @apollo/react-hooks
 */
 
